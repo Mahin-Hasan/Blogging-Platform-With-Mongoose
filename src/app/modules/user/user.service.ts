@@ -3,8 +3,11 @@ import { User } from './user.model';
 
 const createUserIntoDB = async (userData: IUser) => {
 
-  const newOrder = await User.create(userData);
-  return newOrder;
+  const newUser = await User.create(userData);
+
+  const { _id, name, email } = newUser.toObject();
+  
+  return { _id, name, email };
 };
 
 export const userServices = {
