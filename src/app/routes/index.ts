@@ -6,7 +6,7 @@ const router = Router();
 
 const applicationRoutes = [
   {
-    path: '/blogs',
+    path: '',
     route: BlogRoutes,
   },
   {

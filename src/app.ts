@@ -14,6 +14,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Blogging Platform!');
 });
 
+
 app.use(globalErrorHandler);
 //@ts-ignore
 app.use(notFound);
