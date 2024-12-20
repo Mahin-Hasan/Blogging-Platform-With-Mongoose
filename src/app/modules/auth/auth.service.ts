@@ -8,7 +8,7 @@ import config from '../../config';
 
 const loginUser = async (payload: ILoginUser) => {
   const user = await User.isUserExistByCustomEmail(payload.email);
-  console.log('user in auth service',user);
+  console.log('user in auth service', user);
   //no user found validation
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'No User Found!');
@@ -18,10 +18,7 @@ const loginUser = async (payload: ILoginUser) => {
   if (isBlocked) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is Blocked !');
   }
-  //check if user password matches
-  // console.log(payload?.password, user?.password);
-  // console.log(payload?.password === user?.password);
-  // console.log(await User.isPasswordMatched(payload?.password, user?.password));
+  //Check if provided password matches with the stored database
   if (!(await User.isPasswordMatched(payload?.password, user?.password))) {
     throw new AppError(httpStatus.FORBIDDEN, 'Password does not match !');
   }
@@ -36,6 +33,7 @@ const loginUser = async (payload: ILoginUser) => {
   const accessToken = jwt.sign(jwtPayload, config.jwt_access_token as string, {
     expiresIn: config.jwt_access_expires_in,
   });
+  // return { token: `Bearer ${accessToken}` };
   return { token: accessToken };
 };
 

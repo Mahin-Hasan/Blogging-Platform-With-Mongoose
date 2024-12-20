@@ -5,9 +5,8 @@ import { AuthServices } from './auth.service';
 import httpStatus from 'http-status';
 
 const loginUser = catchAsync(async (req, res) => {
-  console.log('Check Auth token',req.user);
+  // console.log('Check Auth token:',req.user);
   const result = await AuthServices.loginUser(req.body);
-  //set refreshToken as cookie
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

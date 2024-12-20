@@ -7,8 +7,9 @@ import { BlogValidation } from './blog.validation';
 
 const router = express.Router();
 
-router.get('/blogs', auth(USER_ROLE.admin), BlogControllers.getAllBlogs);
-router.post('/blogs',auth(USER_ROLE.user),validateRequest(BlogValidation.blogValidationSchema), BlogControllers.createBlog);
+router.get('/blogs', auth(USER_ROLE.user), BlogControllers.getAllBlogs);
+router.post('/blogs',auth(USER_ROLE.user),validateRequest(BlogValidation.createBlogValidationSchema), BlogControllers.createBlog);
+router.patch('/blogs/:id',auth(USER_ROLE.user),validateRequest(BlogValidation.updateBlogValidationSchema), BlogControllers.updateBlog);
 
 
 // also add admin/blog routes

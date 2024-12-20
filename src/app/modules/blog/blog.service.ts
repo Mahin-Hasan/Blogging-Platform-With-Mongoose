@@ -1,12 +1,16 @@
+import { JwtPayload } from 'jsonwebtoken';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
 import { IBlog } from './blog.interface';
 import { Blog } from './blog.model';
 
 const getAllBlogsFromDB = async () => {
-  const result = await Blog.find();
+  const result = await Blog.find()
+    .populate('author', '-password -role -isBlocked -createdAt -updatedAt')
+    .lean();
   return result;
 };
+
 
 //
 const createBlogIntoDB = async (blogData: Partial<IBlog>): Promise<IBlog> => {
@@ -27,12 +31,31 @@ const createBlogIntoDB = async (blogData: Partial<IBlog>): Promise<IBlog> => {
 
   const dataModel = { title, content, author };
   const result = await Blog.create(dataModel);
-  //   const result = await Blog.create(blogData);
 
+  return result;
+};
+
+const updateBlogIntoDB = async (
+  id: string,
+  payload: Partial<IBlog>,
+  // loggerUser: JwtPayload,
+) => {
+  // const isBlogExist = await Blog.findById(id);
+
+  // if (!isBlogExist) {
+  //   throw new AppError(400, 'Provided Blog Id does not exist in Blog collection');
+  // }
+  // console.log(`id: ${id} payload: ${payload} loggedUser: ${loggerUser}`);
+  console.log('id and payload', id, payload);
+  const result = await Blog.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  }).populate('author', '-password -role -isBlocked -createdAt -updatedAt')
+  .lean();
   return result;
 };
 
 export const BlogServices = {
   getAllBlogsFromDB,
   createBlogIntoDB,
+  updateBlogIntoDB,
 };
