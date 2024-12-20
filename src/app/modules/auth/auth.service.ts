@@ -8,7 +8,7 @@ import config from '../../config';
 
 const loginUser = async (payload: ILoginUser) => {
   const user = await User.isUserExistByCustomEmail(payload.email);
-  console.log(user);
+  console.log('user in auth service',user);
   //no user found validation
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'No User Found!');
