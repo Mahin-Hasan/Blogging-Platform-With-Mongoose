@@ -3,14 +3,30 @@ import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
 import { IBlog } from './blog.interface';
 import { Blog } from './blog.model';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { BlogSearchField } from './blog.constant';
 
-const getAllBlogsFromDB = async () => {
-  const result = await Blog.find()
-    .populate('author', '-password -role -isBlocked -createdAt -updatedAt')
-    .lean();
+// const getAllBlogsFromDB = async () => {
+//   const result = await Blog.find()
+//     .populate('author', '-password -role -isBlocked -createdAt -updatedAt')
+//     .lean();
+//   return result;
+// };
+
+//trying get All with query builder
+const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
+  const blogQuery = new QueryBuilder(
+    Blog.find()
+      .populate('author', '-password -role -isBlocked -createdAt -updatedAt')
+      .lean(),
+    query,
+  )
+    .search(BlogSearchField)
+    .sort()
+    .filter();
+  const result = await blogQuery.modelQuery;
   return result;
 };
-
 
 //
 const createBlogIntoDB = async (blogData: Partial<IBlog>): Promise<IBlog> => {
@@ -49,13 +65,19 @@ const updateBlogIntoDB = async (
   console.log('id and payload', id, payload);
   const result = await Blog.findOneAndUpdate({ _id: id }, payload, {
     new: true,
-  }).populate('author', '-password -role -isBlocked -createdAt -updatedAt')
-  .lean();
+  })
+    .populate('author', '-password -role -isBlocked -createdAt -updatedAt')
+    .lean();
   return result;
 };
 
+const deleteBlogFromDB = async (id: string) => {
+  const result = Blog.findByIdAndDelete(id);
+  return result;
+};
 export const BlogServices = {
   getAllBlogsFromDB,
   createBlogIntoDB,
   updateBlogIntoDB,
+  deleteBlogFromDB,
 };

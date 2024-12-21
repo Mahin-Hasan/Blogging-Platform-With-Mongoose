@@ -10,8 +10,8 @@ import { IBlog } from './blog.interface';
 
 const getAllBlogs = catchAsync(async (req, res) => {
   console.log('Check Blogs token', req.user);
-
-  const result = await BlogServices.getAllBlogsFromDB();
+  console.log('Passed Query', req.query);
+  const result = await BlogServices.getAllBlogsFromDB(req.query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -90,8 +90,51 @@ const updateBlog = catchAsync(async (req, res) => {
   });
 });
 
+const deleteBlog = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const loggedUserEmail = req.user?.userEmail;
+
+  // Check if the blog exists
+  const isBlogExist = await Blog.findById(id);
+  if (!isBlogExist) {
+    throw new AppError(
+      400,
+      'Provided Blog Id does not exist in the Blog collection',
+    );
+  }
+
+  // Find the logged-in user by email
+  const userExist = await User.findOne({ email: loggedUserEmail });
+  if (!userExist) {
+    throw new AppError(400, 'User not found!');
+  }
+  const loggedUserId = userExist._id;
+
+  const { author } = isBlogExist;
+  console.log('Logged User:', loggedUserId);
+  console.log('Blog author ID:', author);
+
+  // Check if the logged user is the author of the blog
+  if (!loggedUserId.equals(author)) {
+    throw new AppError(
+      403,
+      'Cannot delete as logged user is not the Author of the blog!',
+    );
+  }
+
+  const result = await BlogServices.deleteBlogFromDB(id);
+
+  sendResponse(res, {
+    success: true,
+    message: 'Blog Deleted successfully',
+    statusCode: 201,
+    data: result,
+  });
+});
+
 export const BlogControllers = {
   getAllBlogs,
   createBlog,
   updateBlog,
+  deleteBlog,
 };
