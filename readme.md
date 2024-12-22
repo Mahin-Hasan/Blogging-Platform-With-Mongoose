@@ -112,11 +112,4 @@ A robust backend solution for a blogging platform, enabling secure user authenti
 - **DELETE** `/api/admin/users/:userId`  
   Delete a user (Admin only).
 
----
 
-## 🌐 API Live Link and Video
-
-- **API Live Link**: [https://blog-project-server-xi.vercel.app/]  
-- **Video Walkthrough**: [https://youtu.be/8MRadApQPyI?si=NPG2a1tH0AX6v7Il]
-
----
