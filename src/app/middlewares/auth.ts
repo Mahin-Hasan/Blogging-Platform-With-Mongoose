@@ -32,7 +32,7 @@ const auth = (...userRoles: TUserRole[]) => {
         if (userRoles && !userRoles.includes(role)) {
           throw new AppError(
             httpStatus.UNAUTHORIZED,
-            'You are not authorized Due to role',
+            'You are not authorized !',
           );
         }
 

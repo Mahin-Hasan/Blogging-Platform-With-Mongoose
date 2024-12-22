@@ -5,7 +5,7 @@ const handleDuplicateError = (err: any): TGenericErrorResponse => {
   const extractedMessage = match && match[1];
   const errorSources: TErrorSources = [
     {
-      details: '',
+      details: 'Duplicate Encountered',
       message: `${extractedMessage} already Exists`,
     },
   ];
@@ -13,7 +13,7 @@ const handleDuplicateError = (err: any): TGenericErrorResponse => {
   const statusCode = 400;
   return {
     statusCode,
-    message: errorSources[0].message || 'Duplicate Error',
+    message: 'Validation Error',
     errorSources,
   };
 };

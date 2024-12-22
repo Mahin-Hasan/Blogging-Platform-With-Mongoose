@@ -6,7 +6,7 @@ import { BlogServices } from './blog.service';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
 import { Blog } from './blog.model';
-import { IBlog } from './blog.interface';
+// import { IBlog } from './blog.interface';
 
 const getAllBlogs = catchAsync(async (req, res) => {
   console.log('Check Blogs token', req.user);
@@ -23,22 +23,21 @@ const getAllBlogs = catchAsync(async (req, res) => {
 
 const createBlog = catchAsync(async (req, res) => {
   const { title, content } = req.body;
-  console.log('In create blog', req.user);
-  // Attach logged-in user as the author
   const author = req.user?.userEmail;
-  console.log('Author in create blog', author);
-  const result = await BlogServices.createBlogIntoDB({
+
+ 
+  const structuredResult = await BlogServices.createBlogIntoDB({
     title,
     content,
-    author, // passed user Email
+    author,
   });
-  //   const result = await BlogServices.createBlogIntoDB(req.body);
 
+  // Send the response
   sendResponse(res, {
     success: true,
     message: 'Blog created successfully',
     statusCode: 201,
-    data: result,
+    data: structuredResult,
   });
 });
 
@@ -55,7 +54,7 @@ const updateBlog = catchAsync(async (req, res) => {
       'Provided Blog Id does not exist in Blog collection',
     );
   }
-  // Find the logged-in user by email
+  // Find the logged in user by email
   const userExist = await User.findOne({ email: loggedUserEmail });
   if (!userExist) {
     throw new AppError(400, 'User not found!');
@@ -85,7 +84,7 @@ const updateBlog = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     message: 'Blog updated successfully',
-    statusCode: 201,
+    statusCode: 200,
     data: result,
   });
 });
@@ -122,13 +121,13 @@ const deleteBlog = catchAsync(async (req, res) => {
     );
   }
 
-  const result = await BlogServices.deleteBlogFromDB(id);
+  await BlogServices.deleteBlogFromDB(id);
 
   sendResponse(res, {
     success: true,
     message: 'Blog Deleted successfully',
     statusCode: 201,
-    data: result,
+    // data: result,
   });
 });
 

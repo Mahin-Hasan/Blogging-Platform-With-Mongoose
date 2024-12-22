@@ -35,7 +35,6 @@ class QueryBuilder<T> {
     }
     return this;
   }
-
   // Filter
   filter() {
     const filter = this.query.filter as string | undefined;

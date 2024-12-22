@@ -1,1 +1,1 @@
-export const BlogSearchField = ['title', 'sortBy', 'sortOrder', 'filter'];
+export const BlogSearchField = ['title', 'content'];

@@ -11,7 +11,7 @@ const loginUser = async (payload: ILoginUser) => {
   console.log('user in auth service', user);
   //no user found validation
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, 'No User Found!');
+    throw new AppError(401, 'Invalid credentials');
   }
   // check if user is blocked or not
   const isBlocked = user?.isBlocked;
@@ -20,7 +20,7 @@ const loginUser = async (payload: ILoginUser) => {
   }
   //Check if provided password matches with the stored database
   if (!(await User.isPasswordMatched(payload?.password, user?.password))) {
-    throw new AppError(httpStatus.FORBIDDEN, 'Password does not match !');
+    throw new AppError(401, 'Invalid credentials');
   }
 
   // trying jwt

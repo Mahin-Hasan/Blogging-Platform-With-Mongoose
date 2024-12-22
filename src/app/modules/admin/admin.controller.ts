@@ -8,25 +8,25 @@ const blockUser = catchAsync(async (req, res) => {
   const { userId } = req.params;
   console.log(req.user);
   console.log('Admin Route User id param:', userId);
-  const result = await AdminServices.blockUser(userId);
+  await AdminServices.blockUser(userId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'User blocked successfully',
-    data: result,
+    // data: result,
   });
 });
 const deleteBlog = catchAsync(async (req, res) => {
-  const { userId } = req.params;
+  const { id } = req.params;
 
-  const result = await AdminServices.deleteBlogFromDB(userId);
+  await AdminServices.deleteBlogFromDB(id);
 
   sendResponse(res, {
     success: true,
     message: 'Blog Deleted successfully',
     statusCode: 201,
-    data: result,
+    // data: result,
   });
 });
 

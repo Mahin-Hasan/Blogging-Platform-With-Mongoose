@@ -17,7 +17,7 @@ import { BlogSearchField } from './blog.constant';
 const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
   const blogQuery = new QueryBuilder(
     Blog.find()
-      .populate('author', '-password -role -isBlocked -createdAt -updatedAt')
+      .populate('author', '-password -role -isBlocked -createdAt -updatedAt -__v')
       .lean(),
     query,
   )
@@ -45,27 +45,33 @@ const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
   // return result;
 };
 
-//
-const createBlogIntoDB = async (blogData: Partial<IBlog>): Promise<IBlog> => {
-  //   const { title, content, author } = blogData;
-  //   console.log('DATA OUTPUT: ',title,content,author);
-  const title = blogData.title;
-  const content = blogData.content;
-  console.log('in blog service', blogData.author);
-  const user = await User.findOne({ email: blogData.author });
+const createBlogIntoDB = async (blogData: Partial<IBlog>) => {
+  const { title, content, author: authorEmail } = blogData;
+
+  // Find the author by email
+  const user = await User.findOne({ email: authorEmail });
   if (!user) {
     throw new AppError(400, 'User not found!!');
   }
-  console.log('User found:', user);
+
+  // Extract author ID
   const author = user._id;
 
-  console.log('User found:', user);
-  console.log('User ID:', author);
+  // Create the blog entry
+  const result = await Blog.create({ title, content, author });
 
-  const dataModel = { title, content, author };
-  const result = await Blog.create(dataModel);
+  // Fetch author details
+  const structuredDetails = await User.findById(author).select(
+    '-password -role -isBlocked -createdAt -updatedAt',
+  );
 
-  return result;
+  // Structure the result
+  return {
+    _id: result._id.toString(),
+    title: result.title,
+    content: result.content,
+    author: structuredDetails,
+  };
 };
 
 const updateBlogIntoDB = async (
@@ -77,8 +83,12 @@ const updateBlogIntoDB = async (
   const result = await Blog.findOneAndUpdate({ _id: id }, payload, {
     new: true,
   })
-    .populate('author', '-password -role -isBlocked -createdAt -updatedAt')
+    .populate('author', '-password -role -isBlocked -createdAt -updatedAt -__v')
+    .select('-isPublished -createdAt -updatedAt -__v')
     .lean();
+
+
+
   return result;
 };
 
