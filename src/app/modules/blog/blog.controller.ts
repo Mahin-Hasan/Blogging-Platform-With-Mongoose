@@ -6,11 +6,9 @@ import { BlogServices } from './blog.service';
 import AppError from '../../errors/AppError';
 import { User } from '../user/user.model';
 import { Blog } from './blog.model';
-// import { IBlog } from './blog.interface';
 
 const getAllBlogs = catchAsync(async (req, res) => {
-  console.log('Check Blogs token', req.user);
-  console.log('Passed Query', req.query);
+ 
   const result = await BlogServices.getAllBlogsFromDB(req.query);
 
   sendResponse(res, {
@@ -25,7 +23,6 @@ const createBlog = catchAsync(async (req, res) => {
   const { title, content } = req.body;
   const author = req.user?.userEmail;
 
- 
   const structuredResult = await BlogServices.createBlogIntoDB({
     title,
     content,
@@ -65,11 +62,7 @@ const updateBlog = catchAsync(async (req, res) => {
   if (!blog) {
     throw new AppError(404, 'logged User does not posted any blog');
   }
-
   const { author } = isBlogExist;
-  // const { author } = blog;
-  console.log('Logged User:', loggedUserId);
-  console.log('Blog author ID:', author);
   if (!loggedUserId.equals(author)) {
     throw new AppError(
       404,
@@ -77,8 +70,7 @@ const updateBlog = catchAsync(async (req, res) => {
     );
   }
   const updatedBlog = req.body;
-  console.log('Updated Blog:', updatedBlog);
-  console.log('Current User:', req.user);
+
   const result = await BlogServices.updateBlogIntoDB(id, updatedBlog);
 
   sendResponse(res, {
@@ -110,8 +102,7 @@ const deleteBlog = catchAsync(async (req, res) => {
   const loggedUserId = userExist._id;
 
   const { author } = isBlogExist;
-  console.log('Logged User:', loggedUserId);
-  console.log('Blog author ID:', author);
+  
 
   // Check if the logged user is the author of the blog
   if (!loggedUserId.equals(author)) {

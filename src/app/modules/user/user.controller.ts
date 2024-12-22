@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
-import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import { userServices } from './user.service';
 import sendResponse from '../../utils/sendResponse';

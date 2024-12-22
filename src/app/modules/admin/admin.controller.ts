@@ -6,8 +6,6 @@ import { AdminServices } from './admin.service';
 
 const blockUser = catchAsync(async (req, res) => {
   const { userId } = req.params;
-  console.log(req.user);
-  console.log('Admin Route User id param:', userId);
   await AdminServices.blockUser(userId);
 
   sendResponse(res, {
@@ -19,7 +17,6 @@ const blockUser = catchAsync(async (req, res) => {
 });
 const deleteBlog = catchAsync(async (req, res) => {
   const { id } = req.params;
-
   await AdminServices.deleteBlogFromDB(id);
 
   sendResponse(res, {

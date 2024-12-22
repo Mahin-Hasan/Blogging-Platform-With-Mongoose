@@ -7,7 +7,6 @@ import notFound from './app/middlewares/notFound';
 app.use(express.json());
 app.use(cors());
 
-//route paths | http://localhost:5000/api | initial api structure
 app.use('/api', router);
 
 app.get('/', (req: Request, res: Response) => {

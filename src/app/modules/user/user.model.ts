@@ -25,7 +25,7 @@ const userSchema = new Schema<IUser, UserModel>(
     timestamps: true,
   },
 );
-//try password hashing
+//password hashing
 userSchema.pre('save', async function (next) {
   const user = this;
   user.password = await bcrypt.hash(
@@ -36,7 +36,7 @@ userSchema.pre('save', async function (next) {
 });
 userSchema.post('save', function (document, next) {
   document.password = '';
-  next(); //dont show password as response
+  next(); //don't showing password as response
 });
 //checking user
 userSchema.statics.isUserExistByCustomEmail = async function (email: string) {
