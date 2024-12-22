@@ -27,9 +27,7 @@ class QueryBuilder<T> {
   // Sort
   sort() {
     const sortBy = this.query.sortBy as string | undefined;
-    console.log(sortBy);
     const sortOrder = this.query.sortOrder === 'desc' ? -1 : 1;
-    console.log('from Builder',sortOrder);
     if (sortBy) {
       this.modelQuery = this.modelQuery.sort({ [sortBy]: sortOrder });
     }
